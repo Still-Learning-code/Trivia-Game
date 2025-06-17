@@ -1,0 +1,81 @@
+ata class Question(
+    val text: String,
+    val options: List<String>,
+    val correctAnswerIndex: Int
+)
+
+class TriviaGame(private val questions: List<Question>) {
+    private var currentQuestionIndex = 0
+    private var score = 0
+
+    fun getCurrentQuestion(): Question? {
+        return questions.getOrNull(currentQuestionIndex)
+    }
+
+    fun checkAnswer(userAnswerIndex: Int): Boolean {
+        val currentQuestion = getCurrentQuestion() ?: return false
+        val isCorrect = userAnswerIndex == currentQuestion.correctAnswerIndex
+        if (isCorrect) {
+            score++
+        }
+        return isCorrect
+    }
+
+    fun nextQuestion(): Question? {
+        currentQuestionIndex++
+        return getCurrentQuestion()
+    }
+
+    fun getScore(): Int {
+        return score
+    }
+
+fun hasMoreQuestions(): Boolean {
+        return currentQuestionIndex < questions.size
+    }
+}
+
+fun main() {
+    val questions = listOf(
+        Question(
+            text = "What is the capital of France?",
+            options = listOf("London", "Paris", "Berlin", "Rome"),
+            correctAnswerIndex = 1
+        ),
+        Question(
+            text = "Which planet is known as the Red Planet?",
+            options = listOf("Earth", "Mars", "Jupiter", "Venus"),
+            correctAnswerIndex = 1
+        ),
+        Question(
+            text = "What is the largest mammal?",
+            options = listOf("Elephant", "Blue Whale", "Giraffe", "Hippopotamus"),
+            correctAnswerIndex = 1
+        )
+    )
+
+ val game = TriviaGame(questions)
+
+    while (game.hasMoreQuestions()) {
+        val currentQuestion = game.getCurrentQuestion()!!
+        println(currentQuestion.text)
+        currentQuestion.options.forEachIndexed { index, option ->
+            println("${index + 1}. $option")
+        }
+
+        print("Your answer (1-${currentQuestion.options.size}): ")
+        val userAnswer = readln().toInt() - 1
+
+        val isCorrect = game.checkAnswer(userAnswer)
+        if (isCorrect) {
+            println("Correct!\n")
+        } else {
+            println("Incorrect.\n")
+        }
+
+  game.nextQuestion()
+    }
+
+    println("Quiz finished!")
+    println("Your final score is: ${game.getScore()}")
+}
